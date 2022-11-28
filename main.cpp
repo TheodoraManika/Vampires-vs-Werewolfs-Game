@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <Windows.h>
+#include "typedefs.h"
 
 using namespace std;
 
