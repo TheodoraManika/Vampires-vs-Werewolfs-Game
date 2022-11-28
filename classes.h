@@ -47,13 +47,14 @@ class Map {
 private:
 	uint width, height;
 	bool day_night;
-	char** map;
 	Vampire* vampires;
 	Werewolf* werewolves;
 	Player* player;
+	char** map;
 public:
 	Map(uint width, uint height);
 	uint get_width() const;
 	uint get_height() const;
 	bool get_day_night() const;
+	void update();
 };
