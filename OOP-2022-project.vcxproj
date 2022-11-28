@@ -127,7 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="classes2.cpp" />
+    <ClCompile Include="functions.cpp" />
+    <ClCompile Include="interface.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="classes1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="classes.h" />
+    <ClInclude Include="functions.h" />
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="typedef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
