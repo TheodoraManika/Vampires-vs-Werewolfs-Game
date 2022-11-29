@@ -127,14 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="classes2.cpp" />
+    <ClCompile Include="entities.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="classes1.cpp" />
+    <ClCompile Include="map.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="classes.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="entities.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="interface.h" />
     <ClInclude Include="typedefs.h" />
