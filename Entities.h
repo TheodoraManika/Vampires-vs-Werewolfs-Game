@@ -23,6 +23,7 @@ public:
 	Player(uint x, uint y, bool team);
 	void heal(Creature* creature);
 	uint get_no_potions() const;	// return number of potions of the player
+	void move();
 };
 
 /* 

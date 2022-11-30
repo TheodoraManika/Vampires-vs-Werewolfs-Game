@@ -6,6 +6,8 @@
 
 using namespace std;
 
+bool state;
+
 int main() {
 	
 

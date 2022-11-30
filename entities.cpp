@@ -59,3 +59,7 @@ void Player::heal(Creature* creature) {
 uint Player::get_no_potions() const {
 	return no_potions;
 }
+
+void Player::move() {
+
+}
