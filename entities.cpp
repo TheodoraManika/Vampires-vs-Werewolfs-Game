@@ -1,4 +1,5 @@
 #include "entities.h"
+#define CREATURE_HEALTH 3
 
 Character::Character(char symbol): symbol(symbol) {}
 
@@ -14,7 +15,7 @@ uint Character::get_y() const {
 	return y;
 }
 
-Creature::Creature(char symbol): Character(symbol) {}
+Creature::Creature(char symbol): Character(symbol), health(CREATURE_HEALTH) {}
 
 void Creature::attack(Creature& creature) {
 
@@ -48,12 +49,16 @@ void Werewolf::move() {
 
 }
 
-Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': 'W') {
+Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': 'W'), no_potions(0) {
 
 }
 
 void Player::heal(Creature* creature) {
 
+}
+
+void Player::pick_up_potion() {
+	no_potions++;
 }
 
 uint Player::get_no_potions() const {

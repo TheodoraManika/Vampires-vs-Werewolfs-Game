@@ -17,6 +17,9 @@ private:
 public:
 	Map(uint width, uint height, bool player_team);
 	void update();		// updates the state of the game
+	void find_empty_pos(uint& pos_x, uint& pos_y); /* finds an empty
+	position on the map in case of collisions during object generation
+	*/
 	void print() const;		// provides graphical interface
 	~Map();
 };

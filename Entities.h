@@ -22,6 +22,7 @@ private:
 public:
 	Player(uint x, uint y, bool team);
 	void heal(Creature* creature);
+	void pick_up_potion();
 	uint get_no_potions() const;	// return number of potions of the player
 	void move();
 };
@@ -48,6 +49,7 @@ public:
 };
 
 class Werewolf : public Creature {
+public:
 	Werewolf(uint x, uint y, uint power, uint defence, uint med);
 	void move();
 };

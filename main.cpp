@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool state;
+bool state = true;
 
 int main() {
 	using namespace chrono_literals;
@@ -27,6 +27,9 @@ int main() {
 	if (answer == 'y' || answer == 'Y')
 		instructions();
 	play_intro(width, height, team);
+
+	Map* map = new Map(width, height, team);
+	map->print();
 
 	return 0;
 }
