@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <time.h>
 #include "map.h"
 #include "typedefs.h"
 
@@ -21,8 +20,6 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 			map[i][j] = ' ';
 		}
 	}
-
-	srand((uint)time(NULL));	// for the map generation
 
 	/*
 	generating the map:

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 #include <chrono>
 #include <thread>
 #include <Windows.h>
@@ -8,9 +10,13 @@
 
 using namespace std;
 
+keys key_state = {false, false, false, false, false,
+	false, false, false, false, false, false};
+
 bool state = true;
 
 int main() {
+	srand((uint)time(NULL));
 	using namespace chrono_literals;
 
 	uint width, height;
