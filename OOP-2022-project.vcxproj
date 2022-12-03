@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="entities.cpp" />
-    <ClCompile Include="functions.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
@@ -136,7 +135,6 @@
   <ItemGroup>
     <ClInclude Include="map.h" />
     <ClInclude Include="entities.h" />
-    <ClInclude Include="functions.h" />
     <ClInclude Include="interface.h" />
     <ClInclude Include="typedefs.h" />
   </ItemGroup>

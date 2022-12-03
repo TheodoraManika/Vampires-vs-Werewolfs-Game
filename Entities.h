@@ -38,7 +38,8 @@ protected:
 public:
 	Creature(char symbol);
 	void attack(Creature& creature);	// argument creature is of opponent team
-	void heal(Creature& creature);		// argument creature is of the same team
+	void heal(Creature& creature, uint random);		// argument creature is of the same team
+	uint get_health() const;
 	friend void Player::heal(Creature* creature);
 };
 

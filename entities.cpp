@@ -18,11 +18,22 @@ uint Character::get_y() const {
 Creature::Creature(char symbol): Character(symbol), health(CREATURE_HEALTH) {}
 
 void Creature::attack(Creature& creature) {
-
+	if (creature.power <= power) {
+		creature.health -= (power - creature.defence);
+	}
 }
 
-void Creature::heal(Creature& creature) {
+void Creature::heal(Creature& creature, uint random) {
+	if (creature.health < CREATURE_HEALTH && med > 0) {
+		if (random % 2) {
+			creature.health++;
+			med--;
+		}
+	}
+}
 
+uint Creature::get_health() const {
+	return health;
 }
 
 Vampire::Vampire(uint x, uint y, uint power, uint defence, uint med): Creature('v') {

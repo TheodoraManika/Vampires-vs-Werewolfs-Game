@@ -17,14 +17,21 @@ void play_intro(uint& width, uint& height, bool& team) {
 	system("cls");
 	
 	while (true) {
-		system("Color 0A");
-		cout << "Please give map dimensions" << "\n";
-		cout << "width: ";
-		cin >> width;
-		cout << "height: ";
-		cin >> height;
+		try {
+			system("Color 0A");
+			cout << "Please give map dimensions" << "\n";
+			cout << "width: ";
+			cin >> width;
+			cout << "height: ";
+			cin >> height;
 
-		if (width == 0 || height == 0 || width + height < 15) {
+			if (width == 0 || height == 0 || width + height < 5) {
+				throw(width);
+			}
+
+			break;
+		}
+		catch (...) {
 			system("cls");
 			system("Color 07");
 			if (width == 0) {
@@ -34,13 +41,10 @@ void play_intro(uint& width, uint& height, bool& team) {
 				cout << "Height can't be 0";
 			}
 			else {
-				cout << "Sum of dimensions must be greater than or equal to 15";
+				cout << "Sum of dimensions must be greater than or equal to 5";
 			}
 			this_thread::sleep_for(3s);
 			system("cls");
-		}
-		else {
-			break;
 		}
 	}
 

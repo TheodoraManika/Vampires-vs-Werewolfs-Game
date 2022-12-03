@@ -29,7 +29,11 @@ int main() {
 	play_intro(width, height, team);
 
 	Map* map = new Map(width, height, team);
-	map->print();
+	while (true) {
+		map->update();
+		this_thread::sleep_for(500ms);
+		map->print();
+	}
 
 	return 0;
 }

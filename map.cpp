@@ -43,7 +43,7 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	find_empty_pos(pos_x, pos_y);
 	map[pos_x][pos_y] = '!';
 
-	uint team_size = (width + height) / 15;
+	uint team_size = (width + height) / 5;
 	// spawning vampires
 	for (int i = 0; i < team_size; i++) {
 		pos_x = rand() % height;
@@ -76,7 +76,7 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	for (int i = 1; i < height - 1; i++) {
 		for (int j = 1; j < width - 1; j++) {
 			if (map[i][j] == ' ') {
-				bool place_tree_lake = ((rand() % 20) == 0);
+				bool place_tree_lake = ((rand() % 50) == 0);
 				if (place_tree_lake) {
 					map[i][j] = (rand() % 10 <= 5) ? '*' : 'o';
 				}
