@@ -59,8 +59,8 @@ void Vampire::move(const char** map, uint width, uint height) {
 			return;
 		}
 	}
-	for (int i = x - 1; i <= x + 1; i++) {
-		for (int j = y - 1; j <= y + 1; j++) {
+	for (uint i = x - 1; i <= x + 1; i++) {
+		for (uint j = y - 1; j <= y + 1; j++) {
 			if (i < height && i >= 0 && j < width && j >= 0) {
 				if (map[i][j] == ' ') {
 					x = i;

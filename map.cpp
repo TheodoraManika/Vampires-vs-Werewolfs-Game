@@ -14,9 +14,9 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 
 	// allocating memory for map
 	map = new char* [height];
-	for (int i = 0; i < height; i++) {
+	for (uint i = 0; i < height; i++) {
 		map[i] = new char[width];
-		for (int j = 0; j < width; j++) {
+		for (uint j = 0; j < width; j++) {
 			map[i][j] = ' ';
 		}
 	}
@@ -42,7 +42,7 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 
 	uint team_size = (width + height) / 5;
 	// spawning vampires
-	for (int i = 0; i < team_size; i++) {
+	for (uint i = 0; i < team_size; i++) {
 		pos_x = rand() % height;
 		pos_y = rand() % width;
 		find_empty_pos(pos_x, pos_y);
@@ -56,7 +56,7 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	}
 
 	// spawning werewolves
-	for (int i = 0; i < team_size; i++) {
+	for (uint i = 0; i < team_size; i++) {
 		pos_x = rand() % height;
 		pos_y = rand() % width;
 		find_empty_pos(pos_x, pos_y);
@@ -70,8 +70,8 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	}
 
 	// spawning trees and lakes (none at the edge of the map)
-	for (int i = 1; i < height - 1; i++) {
-		for (int j = 1; j < width - 1; j++) {
+	for (uint i = 1; i < height - 1; i++) {
+		for (uint j = 1; j < width - 1; j++) {
 			if (map[i][j] == ' ') {
 				bool place_tree_lake = ((rand() % 50) == 0);
 				if (place_tree_lake) {
@@ -109,29 +109,29 @@ void Map::print() const {
 
 	if (state) {
 		// display day_night value
-		for (int i = 0; i < ((width + 2) / 2) - 2; i++) cout << ' ';
+		for (uint i = 0; i < ((width + 2) / 2) - 2; i++) cout << ' ';
 		cout << (day_night ? "Day" : "Night") << '\n';
 
 		// display map
-		for (int i = 0; i < width + 2; i++) cout << '-';
+		for (uint i = 0; i < width + 2; i++) cout << '-';
 		cout << '\n';
-		for (int i = 0; i < height; i++) {
+		for (uint i = 0; i < height; i++) {
 			cout << '|';
-			for (int j = 0; j < width; j++) cout << map[i][j];
+			for (uint j = 0; j < width; j++) cout << map[i][j];
 			cout << '|';
 			cout << '\n';
 		}
-		for (int i = 0; i < width + 2; i++) cout << '-';
+		for (uint i = 0; i < width + 2; i++) cout << '-';
 
 		cout << "\n\nPress space to pause\t\tPress 0 to exit";
 	}
 	else {
 		// display stats & pause menu
-		for (int i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
+		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Active Vampires: " << vampires.size() << '\n';
-		for (int i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
+		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Active Werewolves: " << werewolves.size() << '\n';
-		for (int i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
+		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Remaining potions: " << player->get_no_potions() << '\n';
 
 		cout << "\n\nPress space to continue\t\tPress 0 to exit\t\tPress R to restart";
@@ -148,7 +148,7 @@ Map::~Map() {
 	}
 	werewolves.clear();
 	delete player;
-	for (int i = 0; i < height; i++) {
+	for (uint i = 0; i < height; i++) {
 		delete[] map[i];
 	}
 	delete[] map;
