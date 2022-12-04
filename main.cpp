@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <Windows.h>
-#include "typedefs.h"
+#include "general.h"
 #include "interface.h"
 #include "map.h"
 

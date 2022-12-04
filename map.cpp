@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "map.h"
-#include "typedefs.h"
+#include "general.h"
 
 using namespace std;
 

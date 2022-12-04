@@ -1,8 +1,4 @@
-﻿#include <iostream>
-#include <chrono>
-#include <thread>
-#include <Windows.h>
-#include "interface.h"
+﻿#include "interface.h"
 
 using namespace std;
 
@@ -113,6 +109,23 @@ void instructions() {
 	system("cls");
 	system("Color 0A");
 
+	cout << "How to play the game";
+
+	this_thread::sleep_for(2s);
+	system("cls");
+	system("Color 0F");
+
+	cout << "There are 2 battling teams in this game: Werewolves (w) and Vampires (v).\n"
+		<< "They consist of creatures that move randomly and attack when they are next to an opponent creature.\n"
+		<< "You as a player have to choose a team and protect it by using magic healing potions.\n"
+		<< "You start out with one such potion, while another one is placed on the map and can be picked up (!).\n"
+		<< "Vampires can only be healed during the day and Werewolves can only be healed during the night.\n\n"
+		<< "You win if your team outlives the enemy.\n";
+
+	system("pause");
+	system("cls");
+	system("Color 0A"); 
+
 	cout << "Keys controlling the state of the game";
 
 	this_thread::sleep_for(2s);
@@ -153,4 +166,14 @@ void instructions() {
 		<< "W : move forward\n"
 		<< "S : move backwards\n\n";
 	system("pause");
+}
+
+void ending() {
+	system("cls");
+	system("Color 04");
+
+	cout << "YOU LOST";
+
+	this_thread::sleep_for(3s);
+	system("cls");
 }

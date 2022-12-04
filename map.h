@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "typedefs.h"
+#include "general.h"
 #include "entities.h"
 
 using namespace std;

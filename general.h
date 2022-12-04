@@ -1,3 +1,11 @@
+#include <iostream>
+#include <cstdlib>
+#include <time.h>
+#include <chrono>
+#include <thread>
+#include <Windows.h>
+#include <vector>
+
 #pragma once
 
 typedef unsigned int uint;
