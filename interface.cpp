@@ -1,4 +1,8 @@
 ﻿#include "interface.h"
+#include <iostream>
+#include <windows.h>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -165,6 +169,12 @@ void instructions() {
 		<< "D : move right\n"
 		<< "W : move forward\n"
 		<< "S : move backwards\n\n";
+	
+	system("pause");
+	system("cls");
+
+	cout << "Heal team:\tH\n";
+	
 	system("pause");
 }
 

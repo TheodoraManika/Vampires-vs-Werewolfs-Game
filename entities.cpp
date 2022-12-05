@@ -112,7 +112,8 @@ void Werewolf::move(const char** map, uint width, uint height) {
 }
 
 Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': 'W'), no_potions(0) {
-
+	this->x = x;
+	this->y = y;
 }
 
 void Player::heal(vector<Creature*> creatures) {
@@ -131,7 +132,7 @@ uint Player::get_no_potions() const {
 
 void Player::move(const char** map, uint width, uint height) {
 	if (key_state.W || key_state.UP_ARROW) {
-		if (x - 1 >= 0) {
+		if ((signed)x - 1 >= 0) {
 			if (map[x - 1][y] == ' ') {
 				x--;
 				return;
@@ -139,7 +140,7 @@ void Player::move(const char** map, uint width, uint height) {
 		}
 	}
 	if (key_state.A || key_state.LEFT_ARROW) {
-		if (y - 1 >= 0) {
+		if ((signed)y - 1 >= 0) {
 			if (map[x][y - 1] == ' ') {
 				y--;
 				return;

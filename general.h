@@ -1,11 +1,3 @@
-#include <iostream>
-#include <cstdlib>
-#include <time.h>
-#include <chrono>
-#include <thread>
-#include <Windows.h>
-#include <vector>
-
 #pragma once
 
 typedef unsigned int uint;
@@ -19,7 +11,23 @@ struct keys {
 	bool LEFT_ARROW;
 	bool DOWN_ARROW;
 	bool RIGHT_ARROW;
+	bool H;
 	bool SPACE;
 	bool ZERO;
 	bool R;
+
+	void operator=(bool value) {
+		W = value;
+		A = value;
+		S = value;
+		D = value;
+		UP_ARROW = value;
+		LEFT_ARROW = value;
+		DOWN_ARROW = value;
+		RIGHT_ARROW = value;
+		H = value;
+		SPACE = value;
+		ZERO = value;
+		R = value;
+	}
 };

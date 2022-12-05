@@ -33,7 +33,7 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	*/
 
 	// placing the player
-	map[height - 1][width / 2] = player->get_symbol();
+	map[player->get_x()][player->get_y()] = player->get_symbol();
 	// placing the potion
 	uint pos_x = rand() % height;
 	uint pos_y = rand() % width;
@@ -83,7 +83,10 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 }
 
 void Map::update() {
-
+	if (!state) return;
+	map[player->get_x()][player->get_y()] = ' ';
+	player->move((const char**)map, width, height);
+	map[player->get_x()][player->get_y()] = player->get_symbol();
 }
 
 void Map::find_empty_pos(uint& pos_x, uint& pos_y) {
@@ -127,11 +130,8 @@ void Map::print() const {
 	}
 	else {
 		// display stats & pause menu
-		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Active Vampires: " << vampires.size() << '\n';
-		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Active Werewolves: " << werewolves.size() << '\n';
-		for (uint i = 0; i < ((width + 2) / 2) - 10; i++) cout << ' ';
 		cout << "Remaining potions: " << player->get_no_potions() << '\n';
 
 		cout << "\n\nPress space to continue\t\tPress 0 to exit\t\tPress R to restart";
