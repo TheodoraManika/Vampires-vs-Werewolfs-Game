@@ -50,8 +50,8 @@ void Vampire::move(const char** map, uint width, uint height) {
 	int relative_x = rand() % 3 - 1;
 	int relative_y = rand() % 3 - 1;
 	if (relative_x == 0 && relative_y == 0) return; // don't move
-	int new_x = relative_x + x;
-	int new_y = relative_y + y;
+	int new_x = relative_x + (signed)x;
+	int new_y = relative_y + (signed)y;
 	if (new_x < height && new_x >= 0 && new_y < width && new_y >= 0) {
 		if (map[new_x][new_y] == ' ') {
 			x = new_x;
@@ -59,8 +59,8 @@ void Vampire::move(const char** map, uint width, uint height) {
 			return;
 		}
 	}
-	for (uint i = x - 1; i <= x + 1; i++) {
-		for (uint j = y - 1; j <= y + 1; j++) {
+	for (int i = (signed)x - 1; i <= x + 1; i++) {
+		for (int j = (signed)y - 1; j <= y + 1; j++) {
 			if (i < height && i >= 0 && j < width && j >= 0) {
 				if (map[i][j] == ' ') {
 					x = i;
@@ -86,8 +86,8 @@ void Werewolf::move(const char** map, uint width, uint height) {
 	bool axis = (rand() % 2) ? true : false;	// true -> horizontal move, false -> vertical move
 	bool direction = (rand() % 2) ? true : false;	// true -> forwards, false -> backwards
 
-	uint new_x = x + ((!axis) ? (direction ? 1 : -1) : 0);
-	uint new_y = y + ((axis) ? (direction ? 1 : -1) : 0);
+	int new_x = (signed)x + ((!axis) ? (direction ? 1 : -1) : 0);
+	int new_y = (signed)y + ((axis) ? (direction ? 1 : -1) : 0);
 
 	if (new_x < height && new_x >= 0 && new_y < width && new_y >= 0) {
 		if (map[new_x][new_y] == ' ') {
@@ -96,7 +96,7 @@ void Werewolf::move(const char** map, uint width, uint height) {
 			return;
 		}
 	}
-	new_x = x - 1;
+	new_x = (signed)x - 1;
 	new_y = y;
 	for (int i = 0; i < 4; i++) {
 		if (new_x < height && new_x >= 0 && new_y < width && new_y >= 0) {
@@ -133,7 +133,7 @@ uint Player::get_no_potions() const {
 void Player::move(const char** map, uint width, uint height) {
 	if (key_state.W || key_state.UP_ARROW) {
 		if ((signed)x - 1 >= 0) {
-			if (map[x - 1][y] == ' ') {
+			if (map[x - 1][y] == ' ' || map[x - 1][y] == '!') {
 				x--;
 				return;
 			}
@@ -141,7 +141,7 @@ void Player::move(const char** map, uint width, uint height) {
 	}
 	if (key_state.A || key_state.LEFT_ARROW) {
 		if ((signed)y - 1 >= 0) {
-			if (map[x][y - 1] == ' ') {
+			if (map[x][y - 1] == ' ' || map[x][y - 1] == '!') {
 				y--;
 				return;
 			}
@@ -149,7 +149,7 @@ void Player::move(const char** map, uint width, uint height) {
 	}
 	if (key_state.S || key_state.DOWN_ARROW) {
 		if (x + 1 < height) {
-			if (map[x + 1][y] == ' ') {
+			if (map[x + 1][y] == ' ' || map[x + 1][y] == '!') {
 				x++;
 				return;
 			}
@@ -157,7 +157,7 @@ void Player::move(const char** map, uint width, uint height) {
 	}
 	if (key_state.D || key_state.RIGHT_ARROW) {
 		if (y + 1 < width) {
-			if (map[x][y + 1] == ' ') {
+			if (map[x][y + 1] == ' ' || map[x][y + 1] == '!') {
 				y++;
 				return;
 			}

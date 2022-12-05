@@ -12,7 +12,7 @@ using namespace std;
 
 keys key_state;
 
-bool state = true;
+bool state;
 
 int main() {
 	srand((uint)time(NULL));
@@ -31,6 +31,9 @@ int main() {
 	cin >> answer;
 	if (answer[0] == 'y' || answer[0] == 'Y')
 		instructions();
+
+replay:
+	state = true;
 	play_intro(width, height, team);
 
 	Map* map = new Map(width, height, team);
@@ -40,13 +43,17 @@ int main() {
 			this_thread::sleep_for(50ms);
 
 			if (GetKeyState(VK_SPACE) & 0x8000) {
-				key_state.SPACE = true;
 				state = !state;
 			}
 			if ((GetKeyState(0x30) & 0x8000) || (GetKeyState(VK_NUMPAD0) & 0x8000)) {
-				key_state.ZERO = true;
 				ending();
+				delete map;
 				goto exit;
+			}
+			if ((GetKeyState('R') & 0x8000) && state == false) {
+				delete map;
+				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+				goto replay;
 			}
 			if (GetKeyState(VK_UP) & 0x8000) {
 				key_state.UP_ARROW = true;
@@ -80,6 +87,6 @@ int main() {
 		map->print();
 	}
 
-	exit:
+exit:
 	return 0;
 }

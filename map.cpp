@@ -83,10 +83,36 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 }
 
 void Map::update() {
+	static uint calls = 0;
+
 	if (!state) return;
+
+	// creature movement
+	for (auto i = vampires.begin(); i != vampires.end(); i++) {
+		map[(*i)->get_x()][(*i)->get_y()] = ' ';
+		(*i)->move((const char**)map, width, height);
+		map[(*i)->get_x()][(*i)->get_y()] = (*i)->get_symbol();
+	}
+
+	for (auto i = werewolves.begin(); i != werewolves.end(); i++) {
+		map[(*i)->get_x()][(*i)->get_y()] = ' ';
+		(*i)->move((const char**)map, width, height);
+		map[(*i)->get_x()][(*i)->get_y()] = (*i)->get_symbol();
+	}
+
+	// player movement
 	map[player->get_x()][player->get_y()] = ' ';
 	player->move((const char**)map, width, height);
-	map[player->get_x()][player->get_y()] = player->get_symbol();
+	uint player_x = player->get_x();
+	uint player_y = player->get_y();
+	if (map[player_x][player_y] == '!') player->pick_up_potion();
+	map[player_x][player_y] = player->get_symbol();
+
+	calls++;
+	if (calls == 50) {
+		day_night = !day_night;
+		calls = 0;
+	}
 }
 
 void Map::find_empty_pos(uint& pos_x, uint& pos_y) {

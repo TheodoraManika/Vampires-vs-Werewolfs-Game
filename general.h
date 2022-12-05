@@ -12,9 +12,6 @@ struct keys {
 	bool DOWN_ARROW;
 	bool RIGHT_ARROW;
 	bool H;
-	bool SPACE;
-	bool ZERO;
-	bool R;
 
 	void operator=(bool value) {
 		W = value;
@@ -26,8 +23,5 @@ struct keys {
 		DOWN_ARROW = value;
 		RIGHT_ARROW = value;
 		H = value;
-		SPACE = value;
-		ZERO = value;
-		R = value;
 	}
 };
