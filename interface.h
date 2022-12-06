@@ -6,4 +6,4 @@ void play_intro(uint& x, uint& y, bool& team);
 
 void instructions();
 
-void ending();
+void ending(uint result);

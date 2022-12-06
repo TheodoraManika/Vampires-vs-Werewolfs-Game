@@ -21,7 +21,7 @@ Creature::Creature(char symbol): Character(symbol), health(CREATURE_HEALTH) {}
 
 void Creature::attack(Creature& creature) {
 	if (creature.power <= power) {
-		creature.health -= (power - creature.defence);
+		creature.health -= max((signed)(power - creature.defence), 1);
 	}
 }
 
@@ -34,7 +34,7 @@ void Creature::heal(Creature& creature) {
 	}
 }
 
-uint Creature::get_health() const {
+int Creature::get_health() const {
 	return health;
 }
 
@@ -117,9 +117,11 @@ Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': '
 }
 
 void Player::heal(vector<Creature*> creatures) {
+	if (!key_state.H || no_potions == 0) return;
 	for (auto i = creatures.begin(); i != creatures.end(); i++) {
 		(*i)->health = CREATURE_HEALTH;
 	}
+	no_potions--;
 }
 
 void Player::pick_up_potion() {

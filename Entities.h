@@ -37,12 +37,13 @@ inherit from Creature
 
 class Creature : public Character {
 protected:
-	uint power, defence, health, med;	// med -> number of potions of the creature
+	uint power, defence, med;	// med -> number of potions of the creature
+	int health;
 public:
 	Creature(char symbol);
 	void attack(Creature& creature);	// argument creature is of opponent team
 	void heal(Creature& creature);		// argument creature is of the same team
-	uint get_health() const;
+	int get_health() const;
 	friend void Player::heal(vector<Creature*> creatures);
 };
 

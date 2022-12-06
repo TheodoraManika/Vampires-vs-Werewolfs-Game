@@ -13,6 +13,7 @@ using namespace std;
 keys key_state;
 
 bool state;
+uint result;	// 0 -> exited, 1 -> won, 2 -> lost, 3 -> tied?
 
 int main() {
 	srand((uint)time(NULL));
@@ -33,6 +34,7 @@ int main() {
 		instructions();
 
 replay:
+	result = 0;
 	state = true;
 	play_intro(width, height, team);
 
@@ -46,11 +48,12 @@ replay:
 				state = !state;
 			}
 			if ((GetKeyState(0x30) & 0x8000) || (GetKeyState(VK_NUMPAD0) & 0x8000)) {
-				ending();
+				ending(result);
 				delete map;
 				goto exit;
 			}
 			if ((GetKeyState('R') & 0x8000) && state == false) {
+				map->update() = 0;
 				delete map;
 				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 				goto replay;
@@ -84,6 +87,10 @@ replay:
 			}
 		}
 		map->update();
+		if (result != 0) {
+			ending(result);
+			break;
+		}
 		map->print();
 	}
 

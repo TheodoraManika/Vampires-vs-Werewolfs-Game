@@ -178,11 +178,24 @@ void instructions() {
 	system("pause");
 }
 
-void ending() {
+void ending(uint result) {
 	system("cls");
 	system("Color 04");
 
-	cout << "YOU LOST";
+	switch (result) {
+	case 0:
+		cout << "Thanks for playing";
+		break;
+	case 1:
+		cout << "YOU WON";
+		break;
+	case 2:
+		cout << "YOU LOST";
+		break;
+	case 3:
+		cout << "Tie?!";
+		break;
+	}
 
 	this_thread::sleep_for(3s);
 	system("cls");

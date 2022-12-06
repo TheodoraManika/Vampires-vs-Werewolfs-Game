@@ -10,16 +10,17 @@ private:
 	const uint width, height;
 	bool day_night;		// true -> day, false -> night
 	bool player_team;	// true -> vampires, false -> werewolves
-	vector<Vampire*> vampires;
-	vector<Werewolf*> werewolves;
+	vector<Creature*> vampires;
+	vector<Creature*> werewolves;
 	Player* player;
 	char** map;		// representation of the map
+	Creature*** creature_map;	// for faster update
 	void find_empty_pos(uint& pos_x, uint& pos_y); /* finds an empty
 	position on the map in case of collisions during object generation
 	*/
 public:
 	Map(uint width, uint height, bool player_team);
-	void update();		// updates the state of the game
+	uint& update();		// updates the state of the game
 	void print() const;		// provides graphical interface
 	~Map();
 };
