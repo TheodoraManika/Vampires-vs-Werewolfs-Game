@@ -285,4 +285,9 @@ Map::~Map() {
 		delete[] map[i];
 	}
 	delete[] map;
+
+	for (uint i = 0; i < height; i++) {
+		delete[] creature_map[i];
+	}
+	delete[] creature_map;
 }
