@@ -9,7 +9,7 @@ protected:
 	uint x, y;
 	const char symbol;	// for the map representation
 public:
-	Character(char symbol);
+	Character(char symbol, uint x, uint y);
 	virtual void move(const char** map, uint width, uint height) = 0;
 	char get_symbol() const;
 	uint get_x() const;
@@ -27,6 +27,8 @@ public:
 	void heal(vector<Creature*> creatures);
 	void pick_up_potion();
 	uint get_no_potions() const;	// return number of potions of the player
+	void set_x(uint x);
+	void set_y(uint y);
 	void move(const char** map, uint width, uint height);
 };
 
@@ -40,7 +42,7 @@ protected:
 	uint power, defence, med;	// med -> number of potions of the creature
 	int health;
 public:
-	Creature(char symbol);
+	Creature(char symbol, uint x, uint y, uint power, uint defence, uint med);
 	void attack(Creature& creature);	// argument creature is of opponent team
 	void heal(Creature& creature);		// argument creature is of the same team
 	int get_health() const;

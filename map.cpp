@@ -10,7 +10,7 @@ using namespace std;
 extern bool state;	// true -> playing, false -> paused
 extern uint result;
 
-Map::Map(uint width, uint height, bool player_team): width(width), height(height), day_night(true), player_team(player_team) {
+Map::Map(uint width, uint height, bool player_team): width(width), height(height), day_night(true), player_team(player_team), low_limit_x(0), low_limit_y(0), up_limit_x(height - 1), up_limit_y(width - 1) {
 
 	player = new Player(height - 1, width / 2, player_team);
 	player->pick_up_potion();
@@ -95,13 +95,86 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	}
 }
 
+void Map::srink() {
+	if (up_limit_y - low_limit_y <= 2 || up_limit_x - low_limit_x <= 2) return;
+	bool move_player = false;
+	vector<Creature*> to_remove;
+	if (up_limit_y - low_limit_y >= up_limit_x - low_limit_x) {
+		for (int i = low_limit_x; i <= up_limit_x; i++) {
+			char ch = player->get_symbol();
+			if (map[i][low_limit_y] == ch || map[i][up_limit_y] == ch) move_player = true;
+			map[i][low_limit_y] = 'X';
+			map[i][up_limit_y] = 'X';
+			if (creature_map[i][low_limit_y] != NULL) {
+				to_remove.push_back(creature_map[i][low_limit_y]);
+			}
+			if (creature_map[i][up_limit_y] != NULL) {
+				to_remove.push_back(creature_map[i][up_limit_y]);
+			}
+		}
+		low_limit_y++;
+		up_limit_y--;
+	}
+	else if (up_limit_y - low_limit_y < up_limit_x - low_limit_x) {
+		for (int i = low_limit_y; i <= up_limit_y; i++) {
+			char ch = player->get_symbol();
+			if (map[low_limit_x][i] == ch || map[up_limit_x][i] == ch) move_player = true;
+			map[low_limit_x][i] = 'X';
+			map[up_limit_x][i] = 'X';
+			if (creature_map[low_limit_x][i] != NULL) {
+				to_remove.push_back(creature_map[low_limit_x][i]);
+				creature_map[low_limit_x][i] = NULL;
+			}
+			if (creature_map[up_limit_x][i] != NULL) {
+				to_remove.push_back(creature_map[up_limit_x][i]);
+				creature_map[up_limit_x][i] = NULL;
+			}
+		}
+		low_limit_x++;
+		up_limit_x--;
+	}
+	if (move_player) {
+		for (int i = low_limit_x; i <= up_limit_x; i++) {
+			for (int j = low_limit_y; j <= up_limit_y; j++) {
+				if (map[i][j] == ' ') {
+					player->set_x(i);
+					player->set_y(j);
+					map[i][j] = player->get_symbol();
+					move_player = false;
+					break;
+				}
+			}
+			if (!move_player) break;
+		}
+	}
+	for (auto itr1 = to_remove.begin(); itr1 != to_remove.end(); itr1++) {
+		if ((*itr1)->get_symbol() == 'v') {
+			for (auto itr2 = vampires.begin(); itr2 != vampires.end(); itr2++) {
+				if (*itr1 == *itr2) {
+					vampires.erase(itr2);
+					break;
+				}
+			}
+		}
+		else {
+			for (auto itr2 = werewolves.begin(); itr2 != werewolves.end(); itr2++) {
+				if (*itr1 == *itr2) {
+					werewolves.erase(itr2);
+					break;
+				}
+			}
+		}
+	}
+	to_remove.clear();
+}
+
 uint& Map::update() {
 	static uint calls = 0;
 
 	if (!state) return calls;
 
-	for (uint i = 0; i < height; i++) {
-		for (uint j = 0; j < width; j++) {
+	for (uint i = low_limit_x; i < up_limit_x; i++) {
+		for (uint j = low_limit_y; j < up_limit_y; j++) {
 			if (creature_map[i][j] != NULL) {
 				Creature* neighboring_creature = NULL;
 				if ((signed)i - 1 >= 0 && creature_map[i - 1][j] != NULL) {
@@ -197,6 +270,15 @@ uint& Map::update() {
 
 	using namespace chrono_literals;
 
+	calls++;
+	if (calls == 30 || calls == 60) {
+		day_night = !day_night;
+		if (calls == 60) {
+			srink();
+			calls = 0;
+		}
+	}
+
 	if (vampires.size() == 0 || werewolves.size() == 0) {
 		this_thread::sleep_for(1s);
 
@@ -209,14 +291,6 @@ uint& Map::update() {
 			else result = 1;
 		}
 		else if (vampires.size() == 0 && werewolves.size() == 0) result = 3;
-
-		return calls;
-	}
-
-	calls++;
-	if (calls == 30) {
-		day_night = !day_night;
-		calls = 0;
 	}
 
 	return calls;

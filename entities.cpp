@@ -3,7 +3,7 @@
 
 extern keys key_state;
 
-Character::Character(char symbol): symbol(symbol) {}
+Character::Character(char symbol, uint x, uint y): symbol(symbol), x(x), y(y) {}
 
 char Character::get_symbol() const {
 	return symbol;
@@ -17,7 +17,7 @@ uint Character::get_y() const {
 	return y;
 }
 
-Creature::Creature(char symbol): Character(symbol), health(CREATURE_HEALTH) {}
+Creature::Creature(char symbol, uint x, uint y, uint power, uint defence, uint med): Character(symbol, x, y), power(power), defence(defence), med(med), health(CREATURE_HEALTH) {}
 
 void Creature::attack(Creature& creature) {
 	if (creature.power <= power) {
@@ -38,13 +38,7 @@ int Creature::get_health() const {
 	return health;
 }
 
-Vampire::Vampire(uint x, uint y, uint power, uint defence, uint med): Creature('v') {
-	this->x = x;
-	this->y = y;
-	this->power = power;
-	this->defence = defence;
-	this->med = med;
-}
+Vampire::Vampire(uint x, uint y, uint power, uint defence, uint med): Creature('v', x, y, power, defence, med) {}
 
 void Vampire::move(const char** map, uint width, uint height) {
 	int relative_x = rand() % 3 - 1;
@@ -72,13 +66,7 @@ void Vampire::move(const char** map, uint width, uint height) {
 	}
 }
 
-Werewolf::Werewolf(uint x, uint y, uint power, uint defence, uint med): Creature('w') {
-	this->x = x;
-	this->y = y;
-	this->power = power;
-	this->defence = defence;
-	this->med = med;
-}
+Werewolf::Werewolf(uint x, uint y, uint power, uint defence, uint med): Creature('w', x, y, power, defence, med) {}
 
 void Werewolf::move(const char** map, uint width, uint height) {
 	if (rand() % 9 == 0) return;	// don't move
@@ -111,10 +99,7 @@ void Werewolf::move(const char** map, uint width, uint height) {
 	}
 }
 
-Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': 'W'), no_potions(0) {
-	this->x = x;
-	this->y = y;
-}
+Player::Player(uint x, uint y, bool team) : team(team), Character((team)? 'V': 'W', x, y), no_potions(0) {}
 
 void Player::heal(vector<Creature*> creatures) {
 	if (!key_state.H || no_potions == 0) return;
@@ -130,6 +115,14 @@ void Player::pick_up_potion() {
 
 uint Player::get_no_potions() const {
 	return no_potions;
+}
+
+void Player::set_x(uint x) {
+	this->x = x;
+}
+
+void Player::set_y(uint y) {
+	this->y = y;
 }
 
 void Player::move(const char** map, uint width, uint height) {
