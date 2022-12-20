@@ -17,6 +17,7 @@ void play_intro(uint& width, uint& height, bool& team) {
 	system("cls");
 	
 	while (true) {
+		// read map dimensions
 		try {
 			system("Color 0A");
 			cout << "Please give map dimensions" << "\n";
@@ -25,6 +26,13 @@ void play_intro(uint& width, uint& height, bool& team) {
 			cout << "height: ";
 			cin >> height;
 
+			/*
+				width + height should be greter or equal to 5,
+				as the number of creatures ((width + height) / 5)
+				would be 0 otherwise. Some values of width and height
+				could render the game unplayable (ex. height = 1)
+				but the user is allowed to give them.
+			*/
 			if (width == 0 || height == 0 || width + height < 5) {
 				throw(width);
 			}
@@ -48,6 +56,7 @@ void play_intro(uint& width, uint& height, bool& team) {
 		}
 	}
 
+	// display the values entered
 	this_thread::sleep_for(1s);
 	system("cls");
 
@@ -64,6 +73,7 @@ void play_intro(uint& width, uint& height, bool& team) {
 	system("cls");
 	system("Color 04");
 
+	// user chooses team
 	cout << "Press V for Vampires or W for Werewolves" << "\n";
 
 	while (true) {
@@ -193,6 +203,12 @@ void ending(uint result) {
 		cout << "YOU LOST";
 		break;
 	case 3:
+		/* 
+			could theretically happen if the last
+			two remaining creatures kill each other, or
+			if all the remaining creatures are killed
+			by the srinking borders
+		*/
 		cout << "Tie?!";
 		break;
 	}

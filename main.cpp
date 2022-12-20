@@ -12,7 +12,7 @@ using namespace std;
 
 keys key_state;
 
-bool state;
+bool state;		// true -> playing, false -> paused
 uint result;	// 0 -> exited, 1 -> won, 2 -> lost, 3 -> tied?
 
 int main() {
@@ -23,17 +23,18 @@ int main() {
 	bool team;
 
 	system("color 04");
-	cout << "Werewolves Vs Vampires\a";
+	cout << "Werewolves Vs Vampires\a";	// game title
 	this_thread::sleep_for(3s);
 	system("cls");
 	system("color 07");
+	// ask wether to display instructions
 	cout << "Display instructions (Y/n)? ";
 	string answer;
 	cin >> answer;
 	if (answer[0] == 'y' || answer[0] == 'Y')
 		instructions();
 
-replay:
+replay:	// label for easier control
 	result = 0;
 	state = true;
 	play_intro(width, height, team);
@@ -43,6 +44,7 @@ replay:
 		key_state = false;
 		for (int i = 0; i < 10; i++) {
 			this_thread::sleep_for(50ms);
+			// 500 ms window for user input
 
 			if (GetKeyState(VK_SPACE) & 0x8000) {
 				state = !state;
@@ -50,11 +52,12 @@ replay:
 			if ((GetKeyState(0x30) & 0x8000) || (GetKeyState(VK_NUMPAD0) & 0x8000)) {
 				ending(result);
 				delete map;
-				goto exit;
+				goto exit;	// break from nested loop
 			}
 			if ((GetKeyState('R') & 0x8000) && state == false) {
-				map->update() = 0;
+				map->update() = 0;	// reset day/night timer
 				delete map;
+				// flush leftover characters from player input
 				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 				goto replay;
 			}

@@ -2,6 +2,7 @@
 
 typedef unsigned int uint;
 
+// struct for the state of the needed keys
 struct keys {
 	bool W;
 	bool A;
@@ -13,6 +14,7 @@ struct keys {
 	bool RIGHT_ARROW;
 	bool H;
 
+	// for re-initialization
 	void operator=(bool value) {
 		W = value;
 		A = value;
