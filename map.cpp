@@ -8,9 +8,10 @@
 using namespace std;
 
 extern bool state;	// true -> playing, false -> paused
-extern uint result;
+extern uint result;	// 0 -> exited, 1 -> won, 2 -> lost, 3 -> tied?
 
 Map::Map(uint width, uint height, bool player_team): width(width), height(height), day_night(true), player_team(player_team), low_limit_x(0), low_limit_y(0), up_limit_x(height - 1), up_limit_y(width - 1) {
+// limits to be used for the srinking of the borders
 
 	player = new Player(height - 1, width / 2, player_team);
 	player->pick_up_potion();
@@ -56,11 +57,17 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	for (uint i = 0; i < team_size; i++) {
 		pos_x = rand() % height;
 		pos_y = rand() % width;
+		/* 
+			if the randomly generated position is occupied,
+			pick the next one that is empty
+		*/
 		find_empty_pos(pos_x, pos_y);
 
+		// generating stats
 		uint power = rand() % 3 + 1;
 		uint defence = rand() % 2 + 1;
 		uint med = rand() % 3;
+		// saving the vampire
 		vampires.push_back(new Vampire(pos_x, pos_y, power, defence, med));
 
 		map[pos_x][pos_y] = vampires.back()->get_symbol();
@@ -76,6 +83,8 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 		uint power = rand() % 3 + 1;
 		uint defence = rand() % 2 + 1;
 		uint med = rand() % 3;
+
+		// saving the werewolf
 		werewolves.push_back(new Werewolf(pos_x, pos_y, power, defence, med));
 
 		map[pos_x][pos_y] = werewolves.back()->get_symbol();
@@ -86,9 +95,10 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 	for (uint i = 1; i < height - 1; i++) {
 		for (uint j = 1; j < width - 1; j++) {
 			if (map[i][j] == ' ') {
-				bool place_tree_lake = ((rand() % 50) == 0);
+				bool place_tree_lake = ((rand() % 50) == 0);	// 2% spawn rate
 				if (place_tree_lake) {
-					map[i][j] = (rand() % 10 <= 5) ? '*' : 'o';
+					map[i][j] = (rand() % 10 <= 5) ? '*' : 'o';	
+					// tree -> 60% chance, lake -> 40% chance
 				}
 			}
 		}
@@ -96,25 +106,31 @@ Map::Map(uint width, uint height, bool player_team): width(width), height(height
 }
 
 void Map::srink() {
-	if (up_limit_y - low_limit_y <= 2 || up_limit_x - low_limit_x <= 2) return;
-	bool move_player = false;
-	vector<Creature*> to_remove;
+	// srinking will theoretically stop
+	if (up_limit_y - low_limit_y <= 3 || up_limit_x - low_limit_x <= 3) return;
+	bool move_player = false;	// true if the player should be reallocated due to the srinking borders
+	vector<Creature*> to_remove;	// vector of creatures killed by the srinking borders
+
+	// srinking along the longer axis
 	if (up_limit_y - low_limit_y >= up_limit_x - low_limit_x) {
 		for (int i = low_limit_x; i <= up_limit_x; i++) {
 			char ch = player->get_symbol();
 			if (map[i][low_limit_y] == ch || map[i][up_limit_y] == ch) move_player = true;
+			// X for the map borders
 			map[i][low_limit_y] = 'X';
 			map[i][up_limit_y] = 'X';
-			if (creature_map[i][low_limit_y] != NULL) {
+			if (creature_map[i][low_limit_y] != NULL) {	// creature was killed
 				to_remove.push_back(creature_map[i][low_limit_y]);
 			}
 			if (creature_map[i][up_limit_y] != NULL) {
 				to_remove.push_back(creature_map[i][up_limit_y]);
 			}
 		}
+		// map srinked
 		low_limit_y++;
 		up_limit_y--;
 	}
+	// like above
 	else if (up_limit_y - low_limit_y < up_limit_x - low_limit_x) {
 		for (int i = low_limit_y; i <= up_limit_y; i++) {
 			char ch = player->get_symbol();
@@ -134,19 +150,17 @@ void Map::srink() {
 		up_limit_x--;
 	}
 	if (move_player) {
-		for (int i = low_limit_x; i <= up_limit_x; i++) {
-			for (int j = low_limit_y; j <= up_limit_y; j++) {
-				if (map[i][j] == ' ') {
-					player->set_x(i);
-					player->set_y(j);
-					map[i][j] = player->get_symbol();
-					move_player = false;
-					break;
-				}
-			}
-			if (!move_player) break;
-		}
+		// find a new position for the player
+		uint x = player->get_x();
+		uint y = player->get_y();
+
+		find_empty_pos(x, y);
+		player->set_x(x);
+		player->set_y(y);
+
+		map[x][y] = player->get_symbol();
 	}
+	// erase the killed werewolves and vampires
 	for (auto itr1 = to_remove.begin(); itr1 != to_remove.end(); itr1++) {
 		if ((*itr1)->get_symbol() == 'v') {
 			for (auto itr2 = vampires.begin(); itr2 != vampires.end(); itr2++) {
@@ -165,18 +179,21 @@ void Map::srink() {
 			}
 		}
 	}
+	// clear the temporary vector
 	to_remove.clear();
 }
 
 uint& Map::update() {
-	static uint calls = 0;
+	static uint calls = 0;	// for the pace of srinking and switching between day and night
 
-	if (!state) return calls;
+	if (!state) return calls;	// paused, don't update
 
+	// within the map borders
 	for (uint i = low_limit_x; i < up_limit_x; i++) {
 		for (uint j = low_limit_y; j < up_limit_y; j++) {
 			if (creature_map[i][j] != NULL) {
 				Creature* neighboring_creature = NULL;
+				// check if another creature exists around the current creature
 				if ((signed)i - 1 >= 0 && creature_map[i - 1][j] != NULL) {
 					neighboring_creature = creature_map[i - 1][j];
 				}
@@ -193,18 +210,23 @@ uint& Map::update() {
 				if (neighboring_creature == NULL)
 					continue;
 
+				// if it exists and it is of the same team, choose wether to heal it or not
 				if (neighboring_creature->get_symbol() == creature_map[i][j]->get_symbol()) {
 					creature_map[i][j]->heal(*neighboring_creature);
 				}
+				// else if it is of the ooponent team, choose wether to attack it or not
 				else {
 					creature_map[i][j]->attack(*neighboring_creature);
+					// if the neighbouring creature was killed by the attack
 					if (neighboring_creature->get_health() <= 0) {
 						uint pos_x = neighboring_creature->get_x();
 						uint pos_y = neighboring_creature->get_y();
 
+						// clear its former position
 						creature_map[pos_x][pos_y] = NULL;
 						map[pos_x][pos_y] = ' ';
 
+						// and erase it from the corresponding vector
 						if (neighboring_creature->get_symbol() == 'v') {
 							for (auto itr = vampires.begin(); itr != vampires.end(); itr++) {
 								if (neighboring_creature == *itr) {
@@ -231,15 +253,18 @@ uint& Map::update() {
 
 	// creature movement
 	for (auto i = vampires.begin(); i != vampires.end(); i++) {
+		// empty the vampire's former position on the map
 		creature_map[(*i)->get_x()][(*i)->get_y()] = NULL;
 		map[(*i)->get_x()][(*i)->get_y()] = ' ';
 
 		(*i)->move((const char**)map, width, height);
 
+		// and update it
 		creature_map[(*i)->get_x()][(*i)->get_y()] = *i;
 		map[(*i)->get_x()][(*i)->get_y()] = (*i)->get_symbol();
 	}
 
+	// as above
 	for (auto i = werewolves.begin(); i != werewolves.end(); i++) {
 		creature_map[(*i)->get_x()][(*i)->get_y()] = NULL;
 		map[(*i)->get_x()][(*i)->get_y()] = ' ';
@@ -251,13 +276,19 @@ uint& Map::update() {
 	}
 
 	// player movement
+	
+	// empty the player's former position on the map
 	map[player->get_x()][player->get_y()] = ' ';
 	player->move((const char**)map, width, height);
 	uint player_x = player->get_x();
 	uint player_y = player->get_y();
+	// check if the player picked up the extra potion
 	if (map[player_x][player_y] == '!') player->pick_up_potion();
+
+	// update the player's position on the map
 	map[player_x][player_y] = player->get_symbol();
 
+	// check if the player can heal their team
 	if (day_night && player_team || !day_night && !player_team) {
 		if (player_team) {
 			player->heal(vampires);
@@ -270,6 +301,7 @@ uint& Map::update() {
 
 	using namespace chrono_literals;
 
+	// day/night change and srinking
 	calls++;
 	if (calls == 30 || calls == 60) {
 		day_night = !day_night;
@@ -279,21 +311,25 @@ uint& Map::update() {
 		}
 	}
 
+	// check if game has ended
 	if (vampires.size() == 0 || werewolves.size() == 0) {
 		this_thread::sleep_for(1s);
 
+		// vampires lost
 		if (vampires.size() == 0) {
 			if (player_team) result = 2;
 			else result = 1;
 		}
+		// werewolves lost
 		else if (werewolves.size() == 0) {
 			if (!player_team) result = 2;
 			else result = 1;
 		}
+		// tie (all creatures died)
 		else if (vampires.size() == 0 && werewolves.size() == 0) result = 3;
 	}
 
-	return calls;
+	return calls;	// so the counter can be resetted on replay
 }
 
 void Map::find_empty_pos(uint& pos_x, uint& pos_y) {
@@ -301,15 +337,17 @@ void Map::find_empty_pos(uint& pos_x, uint& pos_y) {
 	while (true) {
 		if (pos_y < width - 1) pos_y++;
 		else if(pos_x < height - 1) {
+			// wrap around the map horizontally
 			pos_x++;
 			pos_y = 0;
 		}
 		else {
+			// wrap around the map diagonally (go back to the first position)
 			pos_x = 0;
 			pos_y = 0;
 		}
 
-		if (map[pos_x][pos_y] == ' ') return;
+		if (map[pos_x][pos_y] == ' ') return;	// empty position found
 	}
 }
 
@@ -346,6 +384,7 @@ void Map::print() const {
 }
 
 Map::~Map() {
+	// clear vampire and werewolf vectors and delete the arrays representing the map
 	for(auto itr = vampires.begin(); itr != vampires.end(); itr++) {
 		delete* itr;
 	}
