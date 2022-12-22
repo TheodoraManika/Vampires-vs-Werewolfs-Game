@@ -29,9 +29,9 @@ void play_intro(uint& width, uint& height, bool& team) {
 			/*
 				width + height should be greter or equal to 5,
 				as the number of creatures ((width + height) / 5)
-				would be 0 otherwise. Some values of width and height
-				could render the game unplayable (ex. height = 1)
-				but the user is allowed to give them.
+				would be 0 otherwise. Large values of width and height
+				could render the game unplayable but
+				the user is allowed to give them.
 			*/
 			if (width <= 1 || height <= 1 || width + height < 5) {
 				throw(width);
