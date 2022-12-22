@@ -33,7 +33,7 @@ void play_intro(uint& width, uint& height, bool& team) {
 				could render the game unplayable (ex. height = 1)
 				but the user is allowed to give them.
 			*/
-			if (width == 0 || height == 0 || width + height < 5) {
+			if (width <= 1 || height <= 1 || width + height < 5) {
 				throw(width);
 			}
 
