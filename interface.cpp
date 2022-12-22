@@ -204,10 +204,9 @@ void ending(uint result) {
 		break;
 	case 3:
 		/* 
-			could theretically happen if the last
-			two remaining creatures kill each other, or
-			if all the remaining creatures are killed
-			by the srinking borders
+			could theretically happen
+			if all the remaining creatures
+			are killed by the srinking borders
 		*/
 		cout << "Tie?!";
 		break;
