@@ -189,8 +189,8 @@ uint& Map::update() {
 	if (!state) return calls;	// paused, don't update
 
 	// within the map borders
-	for (int i = low_limit_x; i < up_limit_x; i++) {
-		for (int j = low_limit_y; j < up_limit_y; j++) {
+	for (int i = low_limit_x; i <= up_limit_x; i++) {
+		for (int j = low_limit_y; j <= up_limit_y; j++) {
 			if (creature_map[i][j] != NULL) {
 				Creature* neighboring_creature = NULL;
 				// check if another creature exists around the current creature
